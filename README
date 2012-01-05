@@ -1,0 +1,23 @@
+reload
+
+
+About
+
+  A command line utility that reloads the active tab in chrome when it is
+  called.
+
+
+Usage
+
+  Open chrome. Type "reload-browser" in a terminal
+
+
+Installation
+
+  Install the chrome extension.
+  
+  Install the command with npm
+  
+    npm install reload
+  
+
