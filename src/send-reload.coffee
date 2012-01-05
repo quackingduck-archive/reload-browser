@@ -1,5 +1,5 @@
 probe = require './probe'
-probe.enable()
+# probe.enable()
 
 # config
 cliDomainSocketPath = '/tmp/reload-browser-socket'

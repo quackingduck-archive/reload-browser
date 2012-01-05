@@ -9,7 +9,7 @@
 # 10mins of idleness
 
 probe = require './probe'
-probe.enable()
+# probe.enable()
 
 # Config
 extensionPort = 35729
