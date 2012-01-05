@@ -1,7 +1,7 @@
 { "name": "reload-browser"
 , "description": "Reload the browser from the command line"
 
-, "main": "./lib/reload.js"
+, "main": "./lib/reload-browser.js"
 
 , "engines": { "node": ">=0.6" }
 , "dependencies": {
@@ -10,7 +10,7 @@
   }
 , "devDependencies": { "coffee-script": "1.2.x" }
 
-, "version": "0.0.1"
+, "version": "0.0.1-dev"
 , "licenses": [
   { "type": "MIT"
   , "url": "https://github.com/quackingduck/reload-browser/raw/master/LICENSE"
