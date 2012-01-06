@@ -2,12 +2,14 @@
 
 <script>
 // window.probes=true
+function probe() { if (window.probes) console.log(arguments) }
+</script>
 
-// Will reconnect if socket is closed at other end.
-// todo: pick a different port
+<script>
+// Socket.io will try to reconnect if socket is closed by other end
 var socket = io.connect('http://localhost:35729')
 
-// pulls reload events
+// Pull reload events
 socket.on('reload', function (data) {
   probe("reload event", data)
 
@@ -15,6 +17,4 @@ socket.on('reload', function (data) {
   // tab in all windows: chrome.tabs.query({active: true})
   chrome.tabs.reload()
 });
-
-function probe() { if (window.probes) console.log(arguments) }
 </script>

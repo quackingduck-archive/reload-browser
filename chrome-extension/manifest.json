@@ -1,5 +1,5 @@
 {
-  "name": "Reload",
+  "name": "Reload Browser",
   "version": "0.0.1",
   "background_page": "background.html",
   "permissions": [
