@@ -26,7 +26,7 @@ sendReloadMsg = require './send-reload'
     probe "starting broker"
     cp = require 'child_process'
 
-    child = cp.spawn 'sh', ['-c', brokerCommand()], setsid: yes
+    child = cp.spawn 'sh', ['-c', brokerCommand()]
 
     # We should never see the broker exit, if this event occurs the broker
     # crashed
