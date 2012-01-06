@@ -47,5 +47,5 @@ brokerCommand = ->
   else
     "node #{__dirname}/broker.js"
   # make sure the command has null file descriptors for its output streams
-  cmd += '> /dev/null 2> /dev/null'
+  cmd += ' > /dev/null 2> /dev/null'
 
