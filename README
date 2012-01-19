@@ -23,10 +23,9 @@ Usage
 
 Installation
 
-  Install the chrome extension.
+  Install the chrome extension:
+  https://github.com/downloads/quackingduck/reload-browser/reload-browser.crx
 
   Install the command with npm
 
     npm install reload-browser
-
-
