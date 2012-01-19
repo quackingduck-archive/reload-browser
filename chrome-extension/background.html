@@ -19,9 +19,7 @@ function pullReload() {
     xhr.send()
     probe('connection completed')
     probe(xhr.responseText)
-
-    // Reloads active tab in active window. Might make sense to reload active
-    // tab in all windows: chrome.tabs.query({active: true})
+    // Reloads active tab in active window.
     chrome.tabs.reload()
     // leave the current stack
     setTimeout(pullReload, 1)
