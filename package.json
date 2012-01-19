@@ -1,6 +1,8 @@
 { "name": "reload-browser"
 , "description": "Reload the browser from the command line"
 
+, "bin": { "reload-browser": "./bin/reload-browser" }
+
 , "main": "./lib/reload-browser.js"
 
 , "engines": { "node": ">=0.6" }
