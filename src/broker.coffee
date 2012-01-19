@@ -1,12 +1,15 @@
-# A background process started by the first call to `reload-browser` command.
-# Listens for the reload messages created when `reload-browser` is invoked
-# from the command line and connections from the browser extension.
+# A background process started by the invocation of the `reload-browser`
+# executable.
 #
-# Reload messages are forwarded (via a websocket server) to the chrome
-# extension
+# The process listens for http connections from the browser extension and push
+# messages from subsequent invocations of `reload-browser`
 #
-# Right now this process never dies. It should die probably time out after
-# 10mins of idleness
+# Reload messages are forwarded (by closing the http connection) to the
+# browser extension.
+#
+# Right now this process dies ... when it's had enough. I'm not entirely clear
+# why it doesn't run indefinitely. It should die probably time out after
+# 10mins or so of idleness.
 
 probe = require './probe'
 # probe.enable()
@@ -15,6 +18,8 @@ probe = require './probe'
 extensionPort = 35729
 cliDomainSocketPath = 'ipc:///tmp/reload-browser-socket'
 
+# HTTP listener that accepts connections from the browser extension and keeps
+# them open
 conns = []
 http = require 'http'
 httpServer = http.createServer (req, res) ->
@@ -23,13 +28,13 @@ httpServer = http.createServer (req, res) ->
   conns.push res
 httpServer.listen extensionPort
 
-# The server the `reload-browser` command talks to
+# The `reload-browser` sends push messages to this pull listener which are
+# then forwarded to the open http connections.
 mp = require 'message-ports'
 mp.messageFormat = 'json'
 cliReloadPull = mp.pull cliDomainSocketPath
 cliReloadPull (data) ->
   probe 'received reload command', data
-  # extensionServer.sockets.emit 'reload', data
   for conn in conns
     conn.write JSON.stringify data
     conn.end()
