@@ -12,6 +12,7 @@ About
 
   (*) patches for other browsers welcome
 
+
 Usage
 
   Open chrome. Run the `reload-browser` executable.
@@ -26,6 +27,6 @@ Installation
   Install the chrome extension:
   https://github.com/downloads/quackingduck/reload-browser/reload-browser.crx
 
-  Install the command with npm
+  Install the command with npm:
 
     npm install reload-browser
