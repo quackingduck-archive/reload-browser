@@ -1,20 +1,46 @@
-<script src="socket.io.js"></script>
-
 <script>
 // window.probes=true
 function probe() { if (window.probes) console.log(arguments) }
 </script>
 
 <script>
-// Socket.io will try to reconnect if socket is closed by other end
-var socket = io.connect('http://localhost:35729')
+// the probe messages don't appear while the browser is blocked during a
+// request ... still works though
 
-// Pull reload events
-socket.on('reload', function (data) {
-  probe("reload event", data)
+var lastConnectionTime;
 
-  // Reloads active tab in active window. Might make sense to reload active
-  // tab in all windows: chrome.tabs.query({active: true})
-  chrome.tabs.reload()
-});
+function pullReload() {
+  try {
+    probe('connecting to server')
+    var xhr = new XMLHttpRequest()
+    // syncronous request
+    xhr.open("GET","http://localhost:35729/",false)
+    lastConnectionTime = new Date();
+    xhr.send()
+    probe('connection completed')
+    probe(xhr.responseText)
+
+    // Reloads active tab in active window. Might make sense to reload active
+    // tab in all windows: chrome.tabs.query({active: true})
+    chrome.tabs.reload()
+    // leave the current stack
+    setTimeout(pullReload, 1)
+  } catch(error) {
+    probe('error: ', error)
+    probe('ms since last connection', (new Date() - lastConnectionTime))
+
+    var retryIn;
+    if ((new Date() - lastConnectionTime) < 1000) {
+      probe('connection failure')
+      retryIn = 1000
+    }
+    else {
+      probe('request timeout')
+      retryIn = 1
+    }
+    setTimeout(pullReload, retryIn)
+  }
+}
+
+pullReload()
 </script>

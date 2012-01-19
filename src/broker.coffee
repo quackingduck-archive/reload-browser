@@ -15,11 +15,13 @@ probe = require './probe'
 extensionPort = 35729
 cliDomainSocketPath = 'ipc:///tmp/reload-browser-socket'
 
-# The server the browser extension talks to
-sio = require 'socket.io'
-extensionServer = sio.listen extensionPort
-extensionServer.sockets.on 'connection', (socket) ->
+conns = []
+http = require 'http'
+httpServer = http.createServer (req, res) ->
   probe 'established browser connection'
+  res.writeHead 200, 'Content-Type': 'text/plain'
+  conns.push res
+httpServer.listen extensionPort
 
 # The server the `reload-browser` command talks to
 mp = require 'message-ports'
@@ -27,7 +29,10 @@ mp.messageFormat = 'json'
 cliReloadPull = mp.pull cliDomainSocketPath
 cliReloadPull (data) ->
   probe 'received reload command', data
-  extensionServer.sockets.emit 'reload', data
+  # extensionServer.sockets.emit 'reload', data
+  for conn in conns
+    conn.write JSON.stringify data
+    conn.end()
 
 # A signal to the process that launched this one (the `reload-browser`
 # executable) that the listeners are up and running
