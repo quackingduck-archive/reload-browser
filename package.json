@@ -6,10 +6,7 @@
 , "main": "./lib/reload-browser.js"
 
 , "engines": { "node": ">=0.6" }
-, "dependencies": {
-    "socket.io": "0.8.x"
-  , "message-ports": "0.3.x"
-  }
+, "dependencies": { "message-ports": "0.3.x" }
 , "devDependencies": { "coffee-script": "1.2.x" }
 
 , "version": "0.0.2-dev"
