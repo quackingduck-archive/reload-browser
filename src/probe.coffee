@@ -2,6 +2,8 @@
 # minimal state
 enabled = no
 probe = -> console.log.apply null, arguments if enabled
+
 probe.enable = -> enabled = yes
+probe.enable() if process.env.PROBE?
 
 module.exports = probe
