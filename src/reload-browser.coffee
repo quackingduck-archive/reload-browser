@@ -16,9 +16,10 @@ sendReloadMsg = require './send-reload'
 
   # Broker is already running
   c.on 'connect', ->
-    probe "connected to broker"
+    probe "broker is running"
     c.destroy()
     sendReloadMsg()
+    console.error "reloaded"
     process.exit()
 
   # Broker needs to be started
@@ -38,6 +39,7 @@ sendReloadMsg = require './send-reload'
     process.on 'SIGCHLD', ->
       probe "received SIGCHLD from broker"
       sendReloadMsg()
+      console.error "reloaded (after booting reload listener)"
       process.exit()
 
 # coffee command used during development
