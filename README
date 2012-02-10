@@ -21,6 +21,10 @@ Usage
   
     wach "make article.html && reload-browser"
 
+Stability
+
+  This program should be considered "alpha". It works on the authors machine
+  but needs more testing in the wild. Bug reports welcome.
 
 Installation
 
@@ -29,4 +33,6 @@ Installation
 
   Install the command with npm:
 
-    npm install reload-browser
+    git clone git@github.com:quackingduck/reload-browser.git
+    cd reload-browser
+    npm install -g .
