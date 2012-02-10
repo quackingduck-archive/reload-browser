@@ -33,6 +33,6 @@ Installation
 
   Install the command with npm:
 
-    git clone https://quackingduck@github.com/quackingduck/reload-browser.git
+    git clone https://github.com/quackingduck/reload-browser.git
     cd reload-browser
     npm install -g .
