@@ -32,7 +32,5 @@ Installation
   https://github.com/downloads/quackingduck/reload-browser/reload-browser-v0.1.0.crx
 
   Install the command with npm:
-
-    git clone https://github.com/quackingduck/reload-browser.git
-    cd reload-browser
-    npm install -g .
+    
+    npm install -g reload-browser
