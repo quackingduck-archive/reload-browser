@@ -4,41 +4,53 @@ function probe() { if (window.probes) console.log(arguments) }
 </script>
 
 <script>
-// the probe messages don't appear while the browser is blocked during a
-// request ... still works though
 
 var lastConnectionTime;
 
-function pullReload() {
-  try {
-    probe('connecting to server')
-    var xhr = new XMLHttpRequest()
-    // syncronous request
-    xhr.open("GET","http://localhost:35729/",false)
-    lastConnectionTime = new Date();
-    xhr.send()
-    probe('connection completed')
-    probe(xhr.responseText)
-    // Reloads active tab in active window.
-    chrome.tabs.reload()
-    // leave the current stack
-    setTimeout(pullReload, 1)
-  } catch(error) {
-    probe('error: ', error)
-    probe('ms since last connection', (new Date() - lastConnectionTime))
+(function pullReload() {
 
-    var retryIn;
-    if ((new Date() - lastConnectionTime) < 1000) {
-      probe('connection failure')
-      retryIn = 1000
+  // callback setup
+  var xhr = new XMLHttpRequest()
+  xhr.onreadystatechange = function() {
+    // request is done
+    if (xhr.readyState === 4) {
+      probe('connection completed')
+
+      // success
+      if (xhr.responseText) {
+        probe('connection success')
+        probe('response', xhr.responseText)
+
+        // Reloads active tab in active window.
+        chrome.tabs.reload()
+        // leave the current stack
+        setTimeout(pullReload, 1)
+      }
+      // error
+      else {
+        probe('connection error')
+        probe('ms since last connection', (new Date() - lastConnectionTime))
+
+        // we figure the kind of error based on how quickly readyState
+        // went to 4
+        var retryIn;
+        if ((new Date() - lastConnectionTime) < 1000) {
+          probe('connection failure')
+          retryIn = 1000
+        }
+        else {
+          probe('request timeout')
+          retryIn = 1
+        }
+        setTimeout(pullReload, retryIn)
+      }
     }
-    else {
-      probe('request timeout')
-      retryIn = 1
-    }
-    setTimeout(pullReload, retryIn)
   }
-}
 
-pullReload()
+  probe('connecting to server')
+  xhr.open("GET","http://localhost:35729/",true)
+  lastConnectionTime = new Date();
+  xhr.send()
+})()
+
 </script>

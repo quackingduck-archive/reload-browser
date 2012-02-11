@@ -1,6 +1,6 @@
 {
   "name": "Reload Browser",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "background_page": "background.html",
   "permissions": [
     "tabs",
