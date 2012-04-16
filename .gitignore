@@ -2,3 +2,5 @@
 /node_modules
 /prototypes
 .DS_Store
+.dropbox
+/Icon*
