@@ -1,19 +1,5 @@
-probe = require './probe'
-# probe.enable()
+http = require 'http'
+qs = require 'querystring'
 
-# config
-cliDomainSocketPath = '/tmp/reload-browser-socket'
-
-mp = require 'message-ports'
-mp.messageFormat = 'json'
-
-sendReloadMsgToBroker = ->
-  probe "connecting to broker"
-  reloadPush = mp.push 'ipc://' + cliDomainSocketPath
-  data = path: process.cwd()
-  probe "sending data to broker", data
-  reloadPush data
-  probe "closing connection to broker"
-  reloadPush.close()
-
-module.exports = sendReloadMsgToBroker
+module.exports = (options = {}, cb) ->
+  http.request( port: 45729, path: '/?' + qs.stringify(options), cb ).end()

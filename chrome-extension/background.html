@@ -1,56 +1,29 @@
 <script>
-// window.probes=true
-function probe() { if (window.probes) console.log(arguments) }
-</script>
 
-<script>
+port = 45729
 
-var lastConnectionTime;
+function connect() {
+  var lastConnectionAttempt = Date.now()
 
-(function pullReload() {
+  var ws = new WebSocket('ws://localhost:' + port)
 
-  // callback setup
-  var xhr = new XMLHttpRequest()
-  xhr.onreadystatechange = function() {
-    // request is done
-    if (xhr.readyState === 4) {
-      probe('connection completed')
-
-      // success
-      if (xhr.responseText) {
-        probe('connection success')
-        probe('response', xhr.responseText)
-
-        // Reloads active tab in active window.
-        chrome.tabs.reload()
-        // leave the current stack
-        setTimeout(pullReload, 1)
-      }
-      // error
-      else {
-        probe('connection error')
-        probe('ms since last connection', (new Date() - lastConnectionTime))
-
-        // we figure the kind of error based on how quickly readyState
-        // went to 4
-        var retryIn;
-        if ((new Date() - lastConnectionTime) < 1000) {
-          probe('connection failure')
-          retryIn = 1000
-        }
-        else {
-          probe('request timeout')
-          retryIn = 1
-        }
-        setTimeout(pullReload, retryIn)
-      }
-    }
+  ws.onmessage = function(event) {
+    // todo: do nothing if this "tab" is a dev console?
+    var msg = JSON.parse(event.data)
+    console.log(msg)
+    if (msg.css_only) chrome.tabs.executeScript(null, {file: "reload-css.js"})
+    else chrome.tabs.reload()
   }
 
-  probe('connecting to server')
-  xhr.open("GET","http://localhost:35729/",true)
-  lastConnectionTime = new Date();
-  xhr.send()
-})()
+  function reconnect() {
+    if ((Date.now() - lastConnectionAttempt) > 1000) connect()
+    else setTimeout(connect, 1000)
+  }
+
+  ws.onerror = reconnect
+  ws.onclose = reconnect
+}
+
+connect()
 
 </script>
