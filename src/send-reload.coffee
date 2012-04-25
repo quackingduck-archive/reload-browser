@@ -1,3 +1,5 @@
+# Pushes a reload request to the broker.
+
 http = require 'http'
 qs = require 'querystring'
 
