@@ -1,46 +1,69 @@
-# Sends a reload message to the broker. We first check if the broker is
-# running (i.e. it's listening on its port). If it isn't running we start
-# it first.
+###
 
-net = require 'net'
-sendReloadMsg = require './send-reload'
-probe = if process.env.MPROBE? then require 'mprobe' else (->)
+In order to get the browser to refresh the current page we have to get a
+message to it. Browsers aren't generally designed to sit around waiting for
+messages from random processes but they _are_ designed to make http
+connections to servers.
 
-port = 45729
+The way this works is that the browser extension is always trying to establish
+a websocket connection to a local webserver on port 45729. We call this the
+"broker" server. If the extension can establish the connection it sleeps for
+a second then tries again.
 
-module.exports = (argv) ->
+This module implements starting the broker (`.startBroker`) and sending it the
+reload message (`sendReloadMsg`). The `reloadBrowser` method first tries to
+connect to the broker, if it's up it sends it the reload message, if it isn't
+then it starts it first then sends it the reload message.
 
-  options = {}
-  options.css_only = yes if 'css' in argv
+###
 
-  c = net.connect port
+module.exports = rb = -> rb.reloadBrowser.apply rb, arguments
 
-  # Broker is already running
-  c.on 'connect', ->
-    c.destroy()
-    sendReloadMsg options, ->
-      console.error "reloaded"
-      process.exit()
+rb.port = 45729
 
-  # Broker needs to be started
-  c.on 'error', ->
-    cp = require 'child_process'
-    child = cp.spawn 'sh', ['-c', brokerCommand()]
-    # We should never see the broker exit, if this event occurs the broker
-    # crashed
-    child.on 'exit', process.exit
+rb.cli = (argv) ->
+  args = {}
+  args.css_only = yes if 'css' in argv
+  @reloadBrowser args, (err, brokerStarted) ->
+    throw err if err?
+    console.error 'reloaded' + (if brokerStarted then ' (after starting broker)' else '')
+    process.exit()
 
-    process.on 'SIGCHLD', ->
-      sendReloadMsg options, ->
-        console.error 'reloaded (after starting broker)'
-        process.exit()
+rb.reloadBrowser = (args = {}, callback) ->
+  callback ?= (->)
+  @attemptConnectionToBroker
+    success: =>
+      @sendReloadMsg args, (err) -> callback err, brokerStarted=no
+    failure: =>
+      @startBroker (err) =>
+        return callback(err) if err?
+        # wait one second to esure browser connects
+        setTimeout =>
+          @sendReloadMsg args, (err) -> callback err, brokerStarted=yes
+        , 1000
 
-# coffee command used during development
-brokerCommand = ->
-  cmd = if process.argv[0] is 'coffee'
-    "coffee #{__dirname}/broker.coffee"
-  else
-    "node #{__dirname}/broker.js"
-  # make sure the command has null file descriptors for its output streams
-  cmd += ' > /dev/null 2> /dev/null'
-  cmd
+rb.sendReloadMsg = (args = {}, callback) ->
+  req = require('http').request
+    port: @port
+    path: '/?' + require('querystring').stringify(args)
+  req.on 'response', -> callback()
+  req.on 'error', callback
+  req.end()
+
+rb.attemptConnectionToBroker = (args = {}) ->
+  conn = require('net').connect @port
+  conn.on 'connect', -> conn.destroy(); args.success()
+  conn.on 'error', args.failure
+
+# starting the broker in a subshell and setting null file descriptors for
+# output streams seems to detach the child process from its parent well enough
+
+rb.startBroker = (callback) ->
+  child = require('child_process').spawn 'sh', ['-c', @brokerCommand]
+  # We should never see the broker exit, if we catch this event then it means
+  # the broker crashed
+  child.on 'exit', -> callback err="failed to start broker"
+  # Broker fires SIGCHLD when it's ready to receive connections
+  process.once 'SIGCHLD', -> callback()
+
+rb.brokerCommand = "node #{__dirname}/broker.js > /dev/null 2> /dev/null"

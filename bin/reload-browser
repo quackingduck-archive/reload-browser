@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../lib/reload-browser')(process.argv.slice(2))
+require('../lib/reload-browser').cli(process.argv.slice(2))

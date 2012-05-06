@@ -1,5 +1,4 @@
-# The broker pulls reload requests and publishes them to connected browser
-# extensions.
+# The broker pulls reload requests and publishes them to connected browsers.
 #
 # Pushing to a broker is done by sending it an http request (of any method)
 # Subscribing to a broker is done by establishing a websocket connection
@@ -10,16 +9,15 @@ connectedWebSockets = []
 http = require 'http'
 qs = require 'querystring'
 httpServer = http.createServer (req, res) ->
-  console.log "reload message received"
-
-  options = JSON.stringify(qs.parse(req.url.split("?")[1]))
-  s.send options for s in connectedWebSockets
+  args = JSON.stringify(qs.parse(req.url.split("?")[1]))
+  console.error "reload message received, args: ", args
+  s.send args for s in connectedWebSockets
   res.end()
 
 WSServer = require('ws').Server
 wss = new WSServer server: httpServer
 wss.on 'connection', (ws) ->
-  console.log "extension connected"
+  console.error "extension connected"
 
   connectedWebSockets.push ws
   ws.on 'close', ->
@@ -27,4 +25,4 @@ wss.on 'connection', (ws) ->
 
 httpServer.listen port, ->
   process.kill process.id, 'SIGCHLD'
-  console.log "broker started"
+  console.error "broker started"
