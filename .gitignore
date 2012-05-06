@@ -1,6 +1,10 @@
-/notes
+/build
 /node_modules
+
+/notes
 /prototypes
+
 .DS_Store
 .dropbox
 /Icon*
+
