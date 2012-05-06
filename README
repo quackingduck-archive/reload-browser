@@ -10,26 +10,22 @@ About
   A command line utility that reloads the active tab in chrome(*) when it is
   invoked.
 
-  (*) patches for other browsers welcome
+  (*) Safari extension forthcoming, patches for other browsers welcome
 
 
 Usage
 
   Open chrome. Run the `reload-browser` executable.
   
-  Pairs well with `wach` - https://github.com/quackingduck/wach
+  Pairs well with `wach` (https://github.com/quackingduck/wach) e.g.:
   
-    wach "make article.html && reload-browser"
-
-Stability
-
-  This program should be considered "alpha". It works on the author's machine
-  but needs more testing in the wild. Bug reports welcome.
+    wach "make index.html && reload-browser"
 
 Installation
 
-  Install the chrome extension:
-  https://github.com/downloads/quackingduck/reload-browser/reload-browser-v0.4.0.crx
+  Install the browser extension:
+    
+    https://github.com/quackingduck/reload-browser/downloads
 
   Install the command with npm:
     
