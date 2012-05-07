@@ -21,6 +21,7 @@ Usage
   
     wach "make index.html && reload-browser"
 
+
 Installation
 
   Install the browser extension:
