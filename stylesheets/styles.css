@@ -251,3 +251,22 @@ footer {
     color:#444;
   }
 }
+
+/* --- */
+
+/* thanks: http://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php */
+
+.video {
+	position: relative;
+	padding-bottom: 62.5%%; /* 16:10 */
+	padding-top: 25px;
+	height: 0;
+}
+
+.video iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
