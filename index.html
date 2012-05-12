@@ -23,14 +23,21 @@
 
   <section>
 
-<p>Install the <a href="https://github.com/quackingduck/reload-browser/downloads">browser extension</a> then run</p>
+<p>Install the <a href="https://github.com/quackingduck/reload-browser/downloads">browser extension</a> then run:</p>
 
 <pre><code>$ reload-browser
 </code></pre>
 
-<p>and the foremost tab/window will reload. To reload every time a file changes combine with a file watcher like <a href="https://github.com/quackingduck/wach">wach</a>:</p>
+<p>and the foremost tab/window will reload.</p>
+
+<p>To reload every time a file changes combine with a file watcher like <a href="https://github.com/quackingduck/wach">wach</a>:</p>
 
 <pre><code>$ wach "make index.html &amp;&amp; reload-browser"
+</code></pre>
+
+<p>You can also reload just the css:</p>
+
+<pre><code>$ wach "make styles.css &amp;&amp; reload-browser css"
 </code></pre>
 
   </section>
