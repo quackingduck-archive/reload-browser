@@ -15,7 +15,7 @@ About
 
 Usage
 
-  Open chrome. Run the `reload-browser` executable.
+  Open chrome, run the `reload-browser` executable, the current tab reloads
   
   Pairs well with `wach` (https://github.com/quackingduck/wach) e.g.:
   
@@ -24,10 +24,10 @@ Usage
 
 Installation
 
-  Install the browser extension:
-    
-    https://github.com/quackingduck/reload-browser/downloads
-
   Install the command with npm:
     
     npm install -g reload-browser
+
+  Then install the browser extension:
+
+    reload-browser --install-chrome-extension
