@@ -22,8 +22,12 @@ module.exports = rb = -> rb.reloadBrowser.apply rb, arguments
 rb.port = 45729
 
 rb.cli = (argv) ->
-  args = {}
-  args.css_only = yes if 'css' in argv
+  args = rb.parseArgs argv
+  if args.install_extension
+    console.log "installing #{args.install_extension} extension"
+    rb.installExtension args.install_extension
+    process.exit()
+
   @reloadBrowser args, (err, brokerStarted) ->
     throw err if err?
     console.error 'reloaded' + (if brokerStarted then ' (after starting broker)' else '')
@@ -67,3 +71,17 @@ rb.startBroker = (callback) ->
   process.once 'SIGCHLD', -> callback()
 
 rb.brokerCommand = "node #{__dirname}/broker.js > /dev/null 2> /dev/null"
+
+# just installs the chrome extension atm
+rb.installExtension = (browser) ->
+  exec = require('child_process').exec
+  switch browser
+    when 'chrome' then exec "open #{__dirname}/../browser-extensions/build/*.crx"
+
+rb.parseArgs = (argv) ->
+  args = {}
+  if '--install-chrome-extension' in argv
+    args.install_extension = 'chrome'
+  if 'css' in argv
+    args.css_only = yes
+  args
