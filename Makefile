@@ -21,9 +21,10 @@ lib/%.js : src/%.coffee
 
 # The filename of the chrome extension
 CRX_DIR = browser-extensions/chrome
-CRX_SOURCES = $(shell ls browser-extensions/chrome/*)
-CRX_VERSION = $(shell cat browser-extensions/chrome/manifest.json | grep version | grep -o [[:digit:]]\.[[:digit:]]\.[[:digit:]])
-CRX_FILE = browser-extensions/build/reload-browser-v$(CRX_VERSION).crx
+CRX_BUILD_DIR = browser-extensions/build
+CRX_SOURCES = $(shell ls $(CRX_DIR)/*)
+CRX_VERSION = $(shell cat $(CRX_DIR)/manifest.json | grep version | grep -o [[:digit:]]\.[[:digit:]]\.[[:digit:]])
+CRX_FILE = $(CRX_BUILD_DIR)/reload-browser-v$(CRX_VERSION).crx
 
 # Task to build chrome extension
 crx : $(CRX_FILE)
@@ -33,7 +34,7 @@ $(CRX_FILE) : $(CRX_SOURCES)
 	/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
 	  --pack-extension=$(CRX_DIR) \
 	  --pack-extension-key=notes/chrome-extension.pem
-	mkdir -p browser-extensions/build
+	mkdir -p $(CRX_BUILD_DIR)
 	mv $(CRX_DIR).crx $(CRX_FILE)
 
 # ---
