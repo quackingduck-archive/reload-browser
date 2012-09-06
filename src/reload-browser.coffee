@@ -47,7 +47,7 @@ rb.reloadBrowser = (args = {}, callback) ->
         , 1000
 
 rb.sendReloadMsg = (args = {}, callback) ->
-  req = require('http').request
+  req = require('https').request
     port: @port
     path: '/?' + require('querystring').stringify(args)
   req.on 'response', -> callback()

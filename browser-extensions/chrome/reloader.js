@@ -1,21 +1,19 @@
-<script>
-
 var port = 45729
 
 function connect() {
   var lastConnectionAttempt = Date.now()
 
-  var ws = new WebSocket('ws://localhost:' + port)
+  var ws = new WebSocket('wss://localhost:' + port)
 
   ws.onmessage = function(event) {
     // todo: do nothing if this "tab" is a dev console?
     var msg = JSON.parse(event.data)
-    // console.log(msg)
+    console.log(msg)
     if (msg.css_only) chrome.tabs.executeScript(null, {file: "reload-css.js"})
     else chrome.tabs.reload()
   }
 
-  function reconnect() {
+  function reconnect(err) {
     if ((Date.now() - lastConnectionAttempt) > 1000) connect()
     else setTimeout(connect, 1000)
   }
@@ -25,5 +23,3 @@ function connect() {
 }
 
 connect()
-
-</script>

@@ -6,9 +6,15 @@
 port = 45729
 connectedWebSockets = []
 
-http = require 'http'
+https = require 'https'
 qs = require 'querystring'
-httpServer = http.createServer (req, res) ->
+fs = require 'fs'
+
+sslOptions =
+  cert: fs.readFileSync __dirname + '/../cert.pem'
+  key:  fs.readFileSync __dirname + '/../key.pem'
+
+httpServer = https.createServer sslOptions, (req, res) ->
   args = JSON.stringify(qs.parse(req.url.split("?")[1]))
   console.error "reload message received, args: ", args
   s.send args for s in connectedWebSockets
