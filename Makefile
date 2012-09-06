@@ -33,5 +33,10 @@ $(CRX_FILE) : $(CRX_SOURCES)
 
 # ---
 
+fix-symlinks :
+	cd node_modules/.bin && rm -rf * && ln -s ../*/bin/* .
+
+# ---
+
 clean :
 	rm -rf $(JS) $(CRX_FILE)
